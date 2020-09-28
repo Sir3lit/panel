@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import useSWR from 'swr';
+import getServerAllocations from '@/api/server/network/getServerAllocations';
+import { Allocation } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
 import AllocationRow from '@/components/server/network/AllocationRow';
+import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import Button from '@/components/elements/Button';
-import createServerAllocation from '@/api/server/network/createServerAllocation';
+import newServerAllocation from '@/api/server/network/newServerAllocation';
 import tw from 'twin.macro';
-import Can from '@/components/elements/Can';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import getServerAllocations from '@/api/swr/getServerAllocations';
-import isEqual from 'react-fast-compare';
-import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
-    const allocations = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
-    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
+    const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
+    const [ addingAllocation, setAddingAllocation ] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = getServerAllocations();
 
     useEffect(() => {
-        mutate(allocations);
+        mutate(allocations, false);
     }, []);
 
     useEffect(() => {
@@ -33,24 +32,38 @@ const NetworkContainer = () => {
         }
     }, [ error ]);
 
-    useDeepCompareEffect(() => {
-        if (!data) return;
-
-        setServerFromState(state => ({ ...state, allocations: data }));
-    }, [ data ]);
-
     const onCreateAllocation = () => {
         clearFlashes('server:network');
 
-        setLoading(true);
-        createServerAllocation(uuid)
+        const initial = data;
+        mutate(data?.map(a => a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }), false);
+
+        setPrimaryServerAllocation(uuid, id)
+            .catch(error => {
+                clearAndAddHttpError({ key: 'server:network', error });
+                mutate(initial, false);
+            });
+    }, []);
+
+    const getNewAllocation = () => {
+        clearFlashes('server:network');
+        setAddingAllocation(true);
+
+        newServerAllocation(uuid)
             .then(allocation => {
-                setServerFromState(s => ({ ...s, allocations: s.allocations.concat(allocation) }));
-                return mutate(data?.concat(allocation), false);
+                mutate(data => ({ ...data, items: data.concat(allocation) }), false);
+                setAddingAllocation(false);
             })
-            .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
-            .then(() => setLoading(false));
+            .catch(error => {
+                clearAndAddHttpError({ key: 'server:network', error });
+                mutate(data, false);
+                setAddingAllocation(false);
+            });
     };
+
+    const onNotesAdded = useCallback((id: number, notes: string) => {
+        mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false);
+    }, []);
 
     return (
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
@@ -82,6 +95,23 @@ const NetworkContainer = () => {
                     </Can>
                 </>
             }
+            <GreyRowBox
+                $hoverable={false}
+                css={tw`mt-2 overflow-x-auto flex items-center justify-center`}
+            >
+                {addingAllocation ?
+                    <Spinner size={'base'} centered/>
+                    :
+                    <Button
+                        color={'primary'}
+                        isSecondary
+                        onClick={() => getNewAllocation() }
+                        css={tw`my-2`}
+                    >
+                        Add New Allocation
+                    </Button>
+                }
+            </GreyRowBox>
         </ServerContentBlock>
     );
 };
