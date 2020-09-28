@@ -84,6 +84,29 @@
                 </div>
                 <div class="box">
                     <div class="box-header with-border">
+                        <h3 class="box-title">Console</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Message Count</label>
+                                <div>
+                                    <input type="number" required class="form-control" name="pterodactyl:console:count" value="{{ old('pterodactyl:console:count', config('pterodactyl.console.count')) }}">
+                                    <p class="text-muted small">The number of messages to be pushed to the console per frequency tick.</p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Frequency Tick</label>
+                                <div>
+                                    <input type="number" required class="form-control" name="pterodactyl:console:frequency" value="{{ old('pterodactyl:console:frequency', config('pterodactyl.console.frequency')) }}">
+                                    <p class="text-muted small">The amount of time in milliseconds between each console message sending tick.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-header with-border">
                         <h3 class="box-title">Automatic Allocation Creation</h3>
                     </div>
                     <div class="box-body">
@@ -91,24 +114,24 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Status</label>
                                 <div>
-                                    <select class="form-control" name="pterodactyl:client_features:allocations:enabled">
+                                    <select class="form-control" name="allocation:enabled">
+                                        <option value="true" @if(old('allocation:enabled', config('allocation.enabled')) == '1') selected @endif>Enabled</option>
                                         <option value="false">Disabled</option>
-                                        <option value="true" @if(old('pterodactyl:client_features:allocations:enabled', config('pterodactyl.client_features.allocations.enabled'))) selected @endif>Enabled</option>
                                     </select>
-                                    <p class="text-muted small">If enabled users will have the option to automatically create new allocations for their server via the frontend.</p>
+                                    <p class="text-muted small">If enabled, the panel will attempt to auto create a new allocation in the range specified if there are no more allocations already created on the node.</p>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="control-label">Starting Port</label>
                                 <div>
-                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_start" value="{{ old('pterodactyl:client_features:allocations:range_start', config('pterodactyl.client_features.allocations.range_start')) }}">
+                                    <input type="number" required class="form-control" name="pterodactyl:allocation:start" value="{{ old('pterodactyl:allocation:start', config('pterodactyl.allocation.start')) }}">
                                     <p class="text-muted small">The starting port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="control-label">Ending Port</label>
                                 <div>
-                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_end" value="{{ old('pterodactyl:client_features:allocations:range_end', config('pterodactyl.client_features.allocations.range_end')) }}">
+                                    <input type="number" required class="form-control" name="pterodactyl:allocation:stop" value="{{ old('pterodactyl:allocation:stop', config('pterodactyl.allocation.stop')) }}">
                                     <p class="text-muted small">The ending port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>
