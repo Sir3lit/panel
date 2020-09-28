@@ -15,7 +15,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
+use Pterodactyl\Services\Allocations\AssignmentService;
+use Illuminate\Support\Facades\Log;
 
 class NetworkAllocationController extends ClientApiController
 {
@@ -30,23 +33,27 @@ class NetworkAllocationController extends ClientApiController
     private $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Allocations\FindAssignableAllocationService
+     * @var \Pterodactyl\Services\Allocations\AssignmentService
      */
-    private $assignableAllocationService;
+    protected $assignmentService;
 
     /**
      * NetworkController constructor.
+     *
+     * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $repository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
+     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
      */
     public function __construct(
         AllocationRepository $repository,
         ServerRepository $serverRepository,
-        FindAssignableAllocationService $assignableAllocationService
+        AssignmentService $assignmentService
     ) {
         parent::__construct();
 
         $this->repository = $repository;
         $this->serverRepository = $serverRepository;
-        $this->assignableAllocationService = $assignableAllocationService;
+        $this->assignmentService = $assignmentService;
     }
 
     /**
@@ -94,17 +101,58 @@ class NetworkAllocationController extends ClientApiController
 
     /**
      * Set the notes for the allocation for a server.
-     *s.
+     *s
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Allocation $allocation
+     * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function store(NewAllocationRequest $request, Server $server): array
+    public function addNew(NewAllocationRequest $request, Server $server): array
     {
-        if ($server->allocations()->count() >= $server->allocation_limit) {
-            throw new DisplayException('Cannot assign additional allocations to this server: limit has been reached.');
+        Log::info('addNew()');
+        $topRange = 25700;
+        $bottomRange = 25565;
+
+        if($server->allocation_limit <= $server->allocations->count()) {
+            Log::error('You have created the maximum number of allocations!');
+            throw new DisplayException(
+                'You have created the maximum number of allocations!'
+            );
         }
 
-        $allocation = $this->assignableAllocationService->handle($server);
+        $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->whereNull('server_id')->first();
+
+        if(!$allocation) {
+            if($server->node->allocations()->where('ip',$server->allocation->ip)->count() >= $topRange-$bottomRange) {
+                Log::error('No allocations available!');
+                throw new DisplayException(
+                    'No more allocations available!'
+                );
+            }
+            Log::info('Creating new allocation...');
+            $allPorts = $server->node->allocations()->select(['port'])->where('ip',$server->allocation->ip)->get()->pluck('port')->toArray();
+
+            do {
+                $port = rand($bottomRange, $topRange);
+                Log::info('Picking port....');
+                // TODO ADD ITERATOR THAT TIMES OUT AFTER SEARCHING FOR SO MUCH TIME?
+            } while(array_search($port, $allPorts));
+
+            $this->assignmentService->handle($server->node,[
+                'allocation_ip'=>$server->allocation->ip,
+                'allocation_ports'=>[$port],
+                'server_id'=>$server->id
+            ]);
+
+            $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->where('port', $port)->first();
+
+        }
+
+        $allocation->update(['server_id' => $server->id]);
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))

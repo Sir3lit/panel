@@ -16,7 +16,6 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
     const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
     const [ addingAllocation, setAddingAllocation ] = useState(false);
 
@@ -50,16 +49,14 @@ const NetworkContainer = () => {
         clearFlashes('server:network');
         setAddingAllocation(true);
 
-        const initial = data;
-
         newServerAllocation(uuid)
             .then(allocation => {
-                mutate(data?.concat(allocation), false);
+                mutate(data => ({ ...data, items: data.concat(allocation) }), false);
                 setAddingAllocation(false);
             })
             .catch(error => {
                 clearAndAddHttpError({ key: 'server:network', error });
-                mutate(initial, false);
+                mutate(data, false);
                 setAddingAllocation(false);
             });
     };
@@ -98,29 +95,23 @@ const NetworkContainer = () => {
                     </Can>
                 </>
             }
-            {allocationLimit > data!.length ?
-                <GreyRowBox
-                    $hoverable={false}
-                    css={tw`mt-2 overflow-x-auto flex items-center justify-center`}
-                >
-                    {addingAllocation ?
-                        <Spinner size={'base'} centered/>
-                        :
-                        <Button
-                            color={'primary'}
-                            isSecondary
-                            onClick={() => getNewAllocation()}
-                            css={tw`my-2`}
-                        >
-                            Add New Allocation
-                        </Button>
-                    }
-                </GreyRowBox>
-                :
-                <p css={tw`mt-2 text-center text-sm text-neutral-400`}>
-                    You have reached the max number of allocations allowed for your server.
-                </p>
-            }
+            <GreyRowBox
+                $hoverable={false}
+                css={tw`mt-2 overflow-x-auto flex items-center justify-center`}
+            >
+                {addingAllocation ?
+                    <Spinner size={'base'} centered/>
+                    :
+                    <Button
+                        color={'primary'}
+                        isSecondary
+                        onClick={() => getNewAllocation() }
+                        css={tw`my-2`}
+                    >
+                        Add New Allocation
+                    </Button>
+                }
+            </GreyRowBox>
         </ServerContentBlock>
     );
 };
