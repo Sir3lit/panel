@@ -147,7 +147,7 @@ export default () => {
                     {status !== 'offline' ?
                         <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
                         :
-                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        <p css={tw`text-sm text-neutral-200 text-center p-3`}>
                             Server is offline.
                         </p>
                     }
@@ -158,7 +158,7 @@ export default () => {
                     {status !== 'offline' ?
                         <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                         :
-                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        <p css={tw`text-sm text-neutral-200 text-center p-3`}>
                             Server is offline.
                         </p>
                     }

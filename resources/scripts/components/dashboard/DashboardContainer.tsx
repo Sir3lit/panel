@@ -33,7 +33,7 @@ export default () => {
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
-                <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
+                <p css={tw`uppercase text-xs text-neutral-200 mr-2`}>
                     {showOnlyAdmin ? 'Showing other\'s servers' : 'Showing your servers'}
                 </p>
                 <Switch

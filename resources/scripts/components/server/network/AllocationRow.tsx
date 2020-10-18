@@ -16,7 +16,7 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
-const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
+const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-200 block px-1 select-none transition-colors duration-150`}`;
 
 interface Props {
     allocation: Allocation;
@@ -42,7 +42,7 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
     return (
         <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-no-wrap mt-2`}>
             <div css={tw`flex items-center w-full md:w-auto`}>
-                <div css={tw`pl-4 pr-6 text-neutral-400`}>
+                <div css={tw`pl-4 pr-6 text-neutral-200`}>
                     <FontAwesomeIcon icon={faNetworkWired}/>
                 </div>
                 <div css={tw`mr-4 flex-1 md:w-40`}>

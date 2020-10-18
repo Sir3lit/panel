@@ -41,7 +41,7 @@ const PermissionLabel = styled.label`
         ${tw`border-neutral-500 bg-neutral-800`};
       }
   }
-  
+
   &:not(:first-of-type) {
       ${tw`mt-4 sm:mt-2`};
   }
@@ -142,7 +142,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
             <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`}/>
             {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
             <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
-                <p css={tw`text-sm text-neutral-300`}>
+                <p css={tw`text-sm text-neutral-200`}>
                     Only permissions which your account is currently assigned may be selected when creating or
                     modifying other users.
                 </p>
@@ -169,7 +169,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                             permissions={group}
                             css={index > 0 ? tw`mt-4` : undefined}
                         >
-                            <p css={tw`text-sm text-neutral-400 mb-4`}>
+                            <p css={tw`text-sm text-neutral-250 mb-4`}>
                                 {permissions[key].description}
                             </p>
                             {Object.keys(permissions[key].keys).map(pkey => (
@@ -190,7 +190,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                     <div css={tw`flex-1`}>
                                         <Label as={'p'} css={tw`font-medium`}>{pkey}</Label>
                                         {permissions[key].keys[pkey].length > 0 &&
-                                        <p css={tw`text-xs text-neutral-400 mt-1`}>
+                                        <p css={tw`text-xs text-neutral-300 mt-1`}>
                                             {permissions[key].keys[pkey]}
                                         </p>
                                         }

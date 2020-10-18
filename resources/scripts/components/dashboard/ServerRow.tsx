@@ -16,24 +16,24 @@ import isEqual from 'react-fast-compare';
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && (current / (limit * 1024 * 1024) >= 0.90);
 
 const Icon = memo(styled(FontAwesomeIcon)<{ $alarm: boolean }>`
-    ${props => props.$alarm ? tw`text-red-400` : tw`text-neutral-500`};
+    ${props => props.$alarm ? tw`text-red-400` : tw`text-neutral-200`};
 `, isEqual);
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
-    ${props => props.$alarm ? tw`text-white` : tw`text-neutral-400`};
+    ${props => props.$alarm ? tw`text-white` : tw`text-neutral-200`};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
     ${tw`grid grid-cols-12 gap-4 relative`};
-    
+
     & .status-bar {
         ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
         height: calc(100% - 0.5rem);
-        
+
         ${({ $status }) => (!$status || $status === 'offline') ? tw`bg-red-500` : ($status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`)};
     }
-    
+
     &:hover .status-bar {
         ${tw`opacity-75`};
     }
@@ -82,15 +82,15 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     <FontAwesomeIcon icon={faServer}/>
                 </div>
                 <div>
-                    <p css={tw`text-lg break-words`}>{server.name}</p>
+                    <p css={tw`text-neutral-50 text-lg break-words`}>{server.name}</p>
                     {!!server.description &&
                     <p css={tw`text-sm text-neutral-300 break-words`}>{server.description}</p>
                     }
                 </div>
             </div>
             <div css={tw`hidden lg:col-span-2 lg:flex ml-4 justify-end h-full`}>
-                <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
-                <p css={tw`text-sm text-neutral-400 ml-2`}>
+                <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-200`}/>
+                <p css={tw`text-sm text-neutral-200 ml-2`}>
                     {
                         server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                             <React.Fragment key={allocation.ip + allocation.port.toString()}>
@@ -132,7 +132,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
+                            <p css={tw`text-xs text-neutral-300 text-center mt-1`}>of {memorylimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -141,7 +141,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
+                            <p css={tw`text-xs text-neutral-300 text-center mt-1`}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
                 }

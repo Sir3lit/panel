@@ -38,13 +38,13 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
 
     return (
         (!canReadContents || (file.isFile && !file.isEditable())) ?
-            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default overflow-hidden truncate`}>
+            <div css={tw`flex flex-1 text-neutral-200 no-underline p-3 cursor-default overflow-hidden truncate`}>
                 {children}
             </div>
             :
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
-                css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
+                css={tw`flex flex-1 text-neutral-200 no-underline p-3 overflow-hidden truncate`}
                 onClick={onRowClick}
             >
                 {children}
@@ -62,7 +62,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
     >
         <SelectFileCheckbox name={file.name}/>
         <Clickable file={file}>
-            <div css={tw`flex-none self-center text-neutral-400 mr-4 text-lg pl-3 ml-6`}>
+            <div css={tw`flex-none self-center text-neutral-200 mr-4 text-lg pl-3 ml-6`}>
                 {file.isFile ?
                     <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
                     :

@@ -53,7 +53,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p css={tw`text-center text-sm text-neutral-200`}>
                                 {databaseLimit > 0 ?
                                     'It looks like you have no databases.'
                                     :
@@ -63,7 +63,7 @@ export default () => {
                         }
                         <Can action={'database.create'}>
                             {(databaseLimit > 0 && databases.length > 0) &&
-                            <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
+                            <p css={tw`text-center text-xs text-neutral-200 mt-2`}>
                                 {databases.length} of {databaseLimit} databases have been allocated to this
                                 server.
                             </p>

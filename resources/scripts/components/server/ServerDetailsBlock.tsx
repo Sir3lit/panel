@@ -66,16 +66,16 @@ const ServerDetailsBlock = () => {
                 />
                 &nbsp;{!status ? 'Connecting...' : status}
             </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
+            <p css={tw`text-sm mt-2`}>
+                <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1 text-neutral-150`}/> {stats.cpu.toFixed(2)}%
             </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}
-                <span css={tw`text-neutral-500`}> / {memorylimit}</span>
+            <p css={tw`text-sm mt-2`}>
+                <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1 text-neutral-150`}/> {bytesToHuman(stats.memory)}
+                <span css={tw`text-neutral-250`}> / {memorylimit}</span>
             </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
-                <span css={tw`text-neutral-500`}> / {disklimit}</span>
+            <p css={tw`text-sm mt-2`}>
+                <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1 text-neutral-150`}/>&nbsp;{bytesToHuman(stats.disk)}
+                <span css={tw`text-neutral-250`}> / {disklimit}</span>
             </p>
         </TitledGreyBox>
     );

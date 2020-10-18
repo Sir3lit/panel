@@ -7,9 +7,9 @@ export interface Props {
 }
 
 const light = css<Props>`
-    ${tw`bg-white border-neutral-200 text-neutral-800`};    
+    ${tw`bg-white border-neutral-200 text-neutral-800`};
     &:focus { ${tw`border-primary-400`} }
-        
+
     &:disabled {
         ${tw`bg-neutral-100 border-neutral-200`};
     }
@@ -40,16 +40,16 @@ const inputStyle = css<Props>`
     ${tw`appearance-none outline-none w-full min-w-0`};
     ${tw`p-3 border rounded text-sm transition-all duration-150`};
     ${tw`bg-neutral-600 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none`};
-    
+
     & + .input-help {
         ${tw`mt-1 text-xs`};
         ${props => props.hasError ? tw`text-red-400` : tw`text-neutral-400`};
     }
-    
+
     &:required, &:invalid {
         ${tw`shadow-none`};
     }
-    
+
     &:not(:disabled):not(:read-only):focus {
         ${tw`shadow-md border-primary-400`};
     }
@@ -57,19 +57,19 @@ const inputStyle = css<Props>`
     &:disabled {
         ${tw`opacity-75`};
     }
-    
+
     ${props => props.isLight && light};
-    ${props => props.hasError && tw`text-red-600 border-red-500 hover:border-red-600`};
+    ${props => props.hasError && tw`text-red-300 border-red-500 hover:border-red-600`};
 `;
 
 const Input = styled.input<Props>`
     &:not([type="checkbox"]):not([type="radio"]) {
         ${inputStyle};
     }
-    
+
     &[type="checkbox"], &[type="radio"] {
         ${checkboxStyle};
-        
+
         &[type="radio"] {
             ${tw`rounded-full`};
         }

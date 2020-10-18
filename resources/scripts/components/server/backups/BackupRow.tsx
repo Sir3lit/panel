@@ -44,7 +44,7 @@ export default ({ backup, className }: Props) => {
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
                     {backup.completedAt ?
-                        <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                        <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-200`}/>
                         :
                         <Spinner size={'small'}/>
                     }
@@ -60,10 +60,10 @@ export default ({ backup, className }: Props) => {
                             {backup.name}
                         </p>
                         {(backup.completedAt && backup.isSuccessful) &&
-                        <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        <span css={tw`ml-3 text-neutral-200 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                         }
                     </div>
-                    <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>
+                    <p css={tw`mt-1 md:mt-0 text-xs text-neutral-300 font-mono truncate`}>
                         {backup.uuid}
                     </p>
                 </div>
@@ -75,7 +75,7 @@ export default ({ backup, className }: Props) => {
                 >
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
+                <p css={tw`text-2xs text-neutral-400 uppercase mt-1`}>Created</p>
             </div>
             <Can action={'backup.download'}>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
