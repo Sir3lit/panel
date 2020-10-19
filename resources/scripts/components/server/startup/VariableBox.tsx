@@ -67,7 +67,7 @@ const VariableBox = ({ variable }: Props) => {
                     placeholder={variable.defaultValue}
                 />
             </InputSpinner>
-            <p css={tw`mt-1 text-xs text-neutral-300`}>
+            <p css={tw`mt-1 text-xs text-neutral-250`}>
                 {variable.description}
             </p>
         </TitledGreyBox>

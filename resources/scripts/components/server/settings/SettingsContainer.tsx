@@ -44,7 +44,7 @@ export default () => {
                             <div css={tw`mt-6 flex items-center`}>
                                 <div css={tw`flex-1`}>
                                     <div css={tw`border-l-4 border-cyan-500 p-3`}>
-                                        <p css={tw`text-xs text-neutral-200`}>
+                                        <p css={tw`text-xs text-neutral-250`}>
                                             Your SFTP password is the same as the password you use to access this panel.
                                         </p>
                                     </div>

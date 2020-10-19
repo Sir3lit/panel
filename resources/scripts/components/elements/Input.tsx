@@ -59,7 +59,7 @@ const inputStyle = css<Props>`
     }
 
     ${props => props.isLight && light};
-    ${props => props.hasError && tw`text-red-300 border-red-500 hover:border-red-600`};
+    ${props => props.hasError && tw`border-red-500 hover:border-red-600`};
 `;
 
 const Input = styled.input<Props>`

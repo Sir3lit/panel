@@ -49,7 +49,7 @@ export default ({ subuser }: Props) => {
                 <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter(permission => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-neutral-300 uppercase`}>Permissions</p>
+                <p css={tw`text-2xs text-neutral-250 uppercase`}>Permissions</p>
             </div>
             <Can action={'user.update'}>
                 {subuser.uuid !== uuid &&

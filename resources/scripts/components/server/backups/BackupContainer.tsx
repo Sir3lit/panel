@@ -34,7 +34,7 @@ export default () => {
         <ServerContentBlock title={'Backups'}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.items.length ?
-                <p css={tw`text-center text-sm text-neutral-200`}>
+                <p css={tw`text-center text-sm text-neutral-250`}>
                     There are no backups stored for this server.
                 </p>
                 :
@@ -47,13 +47,13 @@ export default () => {
                 </div>
             }
             {backupLimit === 0 &&
-            <p css={tw`text-center text-sm text-neutral-200`}>
+            <p css={tw`text-center text-sm text-neutral-250`}>
                 Backups cannot be created for this server.
             </p>
             }
             <Can action={'backup.create'}>
                 {(backupLimit > 0 && backups.items.length > 0) &&
-                <p css={tw`text-center text-xs text-neutral-200 mt-2`}>
+                <p css={tw`text-center text-xs text-neutral-250 mt-2`}>
                     {backups.items.length} of {backupLimit} backups have been created for this server.
                 </p>
                 }
