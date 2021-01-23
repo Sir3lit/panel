@@ -45,6 +45,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * to keep re-assigning variables.
      *
      * @param \Illuminate\Http\Response $response
+     *
      * @return \Illuminate\Testing\TestResponse
      */
     protected function createTestResponse($response)
@@ -55,10 +56,8 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Returns a link to the specific resource using the client API.
      *
-     * @param mixed $model
+     * @param mixed       $model
      * @param string|null $append
-     *
-     * @return string
      */
     protected function link($model, $append = null): string
     {
@@ -91,8 +90,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * is assumed that the user is actually a subuser of the server.
      *
      * @param string[] $permissions
-     *
-     * @return array
      */
     protected function generateTestAccount(array $permissions = []): array
     {
@@ -119,7 +116,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * Asserts that the data passed through matches the output of the data from the transformer. This
      * will remove the "relationships" key when performing the comparison.
      *
-     * @param array $data
      * @param \Pterodactyl\Models\Model|\Illuminate\Database\Eloquent\Model $model
      */
     protected function assertJsonTransformedWith(array $data, $model)
@@ -127,7 +123,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         $reflect = new ReflectionClass($model);
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
-        $transformer = new $transformer;
+        $transformer = new $transformer();
         $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
 
         $this->assertSame(

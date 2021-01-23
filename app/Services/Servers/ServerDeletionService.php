@@ -87,7 +87,7 @@ class ServerDeletionService
                 try {
                     $this->databaseManagementService->delete($database);
                 } catch (Exception $exception) {
-                    if (! $this->force) {
+                    if (!$this->force) {
                         throw $exception;
                     }
 

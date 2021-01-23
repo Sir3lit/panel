@@ -12,8 +12,8 @@ use Illuminate\Validation\UnauthorizedException;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\DownloadLinkService;
 use Pterodactyl\Services\Backups\InitiateBackupService;
-use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
+use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
@@ -65,8 +65,8 @@ class BackupController extends ClientApiController
      */
     public function index(Request $request, Server $server)
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new UnauthorizedException();
+        if (! $request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
+            throw new UnauthorizedException;
         }
 
         $limit = min($request->query('per_page') ?? 20, 50);
@@ -110,8 +110,8 @@ class BackupController extends ClientApiController
      */
     public function view(Request $request, Server $server, Backup $backup)
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new UnauthorizedException();
+        if (! $request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
+            throw new UnauthorizedException;
         }
 
         return $this->fractal->item($backup)
@@ -127,68 +127,15 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup)
-    {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new UnauthorizedException();
-        }
-
-        $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
-            $audit->metadata = ['backup_uuid' => $backup->uuid];
-
-            $this->deleteBackupService->handle($backup);
-        });
-
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * Download the backup for a given server instance. For daemon local files, the file
-     * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
-     * which the user is redirected to.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function download(Request $request, Server $server, Backup $backup)
-    {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
-            throw new UnauthorizedException();
-        }
-
-        switch ($backup->disk) {
-            case Backup::ADAPTER_WINGS:
-            case Backup::ADAPTER_AWS_S3:
-                return new JsonResponse([
-                    'object' => 'signed_url',
-                    'attributes' => ['url' => ''],
-                ]);
-            default:
-                throw new BadRequestHttpException();
-        }
-    }
-
-    /**
-     * Handles restoring a backup by making a request to the Wings instance telling it
-     * to begin the process of finding (or downloading) the backup and unpacking it
-     * over the server files.
-     *
-     * If the "truncate" flag is passed through in this request then all of the
-     * files that currently exist on the server will be deleted before restoring.
-     * Otherwise the archive will simply be unpacked over the existing files.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Throwable
-     */
     public function restore(Request $request, Server $server, Backup $backup)
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
-            throw new UnauthorizedException();
+        if (! $request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
+            throw new UnauthorizedException;
         }
 
         // Cannot restore a backup unless a server is fully installed and not currently
         // processing a different backup restoration request.
-        if (!is_null($server->status)) {
+        if (! is_null($server->status)) {
             throw new BadRequestHttpException('This server is not currently in a state that allows for a backup to be restored.');
         }
 
