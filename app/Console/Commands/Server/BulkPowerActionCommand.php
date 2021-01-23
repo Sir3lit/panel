@@ -27,6 +27,8 @@ class BulkPowerActionCommand extends Command
     /**
      * Handle the bulk power request.
      *
+     * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
+     * @param \Illuminate\Validation\Factory $validator
      * @throws \Illuminate\Validation\ValidationException
      */
     public function handle(DaemonPowerRepository $powerRepository, ValidatorFactory $validator)
@@ -56,7 +58,7 @@ class BulkPowerActionCommand extends Command
         }
 
         $count = $this->getQueryBuilder($servers, $nodes)->count();
-        if (!$this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count])) && $this->input->isInteractive()) {
+        if (! $this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count])) && $this->input->isInteractive()) {
             return;
         }
 
@@ -85,6 +87,8 @@ class BulkPowerActionCommand extends Command
     /**
      * Returns the query builder instance that will return the servers that should be affected.
      *
+     * @param array $servers
+     * @param array $nodes
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function getQueryBuilder(array $servers, array $nodes)
@@ -93,11 +97,11 @@ class BulkPowerActionCommand extends Command
             ->where('suspended', false)
             ->where('installed', Server::STATUS_INSTALLED);
 
-        if (!empty($nodes) && !empty($servers)) {
+        if (! empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
-        } elseif (empty($nodes) && !empty($servers)) {
+        } elseif (empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (!empty($nodes) && empty($servers)) {
+        } elseif (! empty($nodes) && empty($servers)) {
             $instance->whereIn('node_id', $nodes);
         }
 

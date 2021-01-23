@@ -18,6 +18,8 @@ class UserFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
@@ -41,6 +43,8 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user is an admin.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function admin(): Factory
     {
