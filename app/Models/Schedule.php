@@ -8,23 +8,22 @@ use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $name
- * @property string $cron_day_of_week
- * @property string $cron_month
- * @property string $cron_day_of_month
- * @property string $cron_hour
- * @property string $cron_minute
- * @property bool $is_active
- * @property bool $is_processing
- * @property bool $only_when_online
- * @property \Carbon\Carbon|null $last_run_at
- * @property \Carbon\Carbon|null $next_run_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $hashid
- * @property \Pterodactyl\Models\Server $server
+ * @property int                                                       $id
+ * @property int                                                       $server_id
+ * @property string                                                    $name
+ * @property string                                                    $cron_day_of_week
+ * @property string                                                    $cron_month
+ * @property string                                                    $cron_day_of_month
+ * @property string                                                    $cron_hour
+ * @property string                                                    $cron_minute
+ * @property bool                                                      $is_active
+ * @property bool                                                      $is_processing
+ * @property \Carbon\Carbon|null                                       $last_run_at
+ * @property \Carbon\Carbon|null                                       $next_run_at
+ * @property \Carbon\Carbon                                            $created_at
+ * @property \Carbon\Carbon                                            $updated_at
+ * @property string                                                    $hashid
+ * @property \Pterodactyl\Models\Server                                $server
  * @property \Pterodactyl\Models\Task[]|\Illuminate\Support\Collection $tasks
  */
 class Schedule extends Model
@@ -64,7 +63,6 @@ class Schedule extends Model
         'cron_minute',
         'is_active',
         'is_processing',
-        'only_when_online',
         'last_run_at',
         'next_run_at',
     ];
@@ -77,7 +75,6 @@ class Schedule extends Model
         'server_id' => 'integer',
         'is_active' => 'boolean',
         'is_processing' => 'boolean',
-        'only_when_online' => 'boolean',
     ];
 
     /**
@@ -102,7 +99,6 @@ class Schedule extends Model
         'cron_minute' => '*',
         'is_active' => true,
         'is_processing' => false,
-        'only_when_online' => false,
     ];
 
     /**
@@ -118,7 +114,6 @@ class Schedule extends Model
         'cron_minute' => 'required|string',
         'is_active' => 'boolean',
         'is_processing' => 'boolean',
-        'only_when_online' => 'boolean',
         'last_run_at' => 'nullable|date',
         'next_run_at' => 'nullable|date',
     ];
@@ -127,15 +122,13 @@ class Schedule extends Model
      * Returns the schedule's execution crontab entry as a string.
      *
      * @return \Carbon\CarbonImmutable
-     *
-     * @throws \Exception
      */
     public function getNextRunDate()
     {
         $formatted = sprintf('%s %s %s %s %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_month, $this->cron_day_of_week);
 
         return CarbonImmutable::createFromTimestamp(
-            (new CronExpression($formatted))->getNextRunDate()->getTimestamp()
+            CronExpression::factory($formatted)->getNextRunDate()->getTimestamp()
         );
     }
 

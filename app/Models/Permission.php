@@ -39,9 +39,9 @@ class Permission extends Model
 
     public const ACTION_BACKUP_READ = 'backup.read';
     public const ACTION_BACKUP_CREATE = 'backup.create';
+    public const ACTION_BACKUP_UPDATE = 'backup.update';
     public const ACTION_BACKUP_DELETE = 'backup.delete';
     public const ACTION_BACKUP_DOWNLOAD = 'backup.download';
-    public const ACTION_BACKUP_RESTORE = 'backup.restore';
 
     public const ACTION_ALLOCATION_READ = 'allocation.read';
     public const ACTION_ALLOCATION_CREATE = 'allocation.create';
@@ -157,7 +157,7 @@ class Permission extends Model
                 'read' => 'Allows a user to view all backups that exist for this server.',
                 'delete' => 'Allows a user to remove backups from the system.',
                 'download' => 'Allows a user to download a backup for the server. Danger: this allows a user to access all files for the server in the backup.',
-                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.',
+                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.'
             ],
         ],
 

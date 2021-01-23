@@ -5,23 +5,21 @@ namespace Pterodactyl\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $uuid
- * @property bool $is_successful
- * @property bool $is_locked
- * @property string $name
- * @property string[] $ignored_files
- * @property string $disk
- * @property string|null $checksum
- * @property int $bytes
- * @property string|null $upload_id
+ * @property int                          $id
+ * @property int                          $server_id
+ * @property string                       $uuid
+ * @property bool                         $is_successful
+ * @property string                       $name
+ * @property string[]                     $ignored_files
+ * @property string                       $disk
+ * @property string|null                  $checksum
+ * @property int                          $bytes
+ * @property string|null                  $upload_id
  * @property \Carbon\CarbonImmutable|null $completed_at
- * @property \Carbon\CarbonImmutable $created_at
- * @property \Carbon\CarbonImmutable $updated_at
+ * @property \Carbon\CarbonImmutable      $created_at
+ * @property \Carbon\CarbonImmutable      $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
- * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\AuditLog[] $audits
+ * @property \Pterodactyl\Models\Server   $server
  */
 class Backup extends Model
 {
@@ -48,7 +46,6 @@ class Backup extends Model
     protected $casts = [
         'id' => 'int',
         'is_successful' => 'bool',
-        'is_locked' => 'bool',
         'ignored_files' => 'array',
         'bytes' => 'int',
     ];
@@ -65,7 +62,6 @@ class Backup extends Model
      */
     protected $attributes = [
         'is_successful' => true,
-        'is_locked' => false,
         'checksum' => null,
         'bytes' => 0,
         'upload_id' => null,
@@ -83,7 +79,6 @@ class Backup extends Model
         'server_id' => 'bail|required|numeric|exists:servers,id',
         'uuid' => 'required|uuid',
         'is_successful' => 'boolean',
-        'is_locked' => 'boolean',
         'name' => 'required|string',
         'ignored_files' => 'array',
         'disk' => 'required|string',
@@ -98,15 +93,5 @@ class Backup extends Model
     public function server()
     {
         return $this->belongsTo(Server::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function audits()
-    {
-        return $this->hasMany(AuditLog::class, 'metadata->backup_uuid', 'uuid')
-            ->where('action', 'LIKE', 'server:backup.%');
-            // ->where('metadata->backup_uuid', $this->uuid);
     }
 }

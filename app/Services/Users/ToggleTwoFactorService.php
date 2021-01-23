@@ -74,7 +74,7 @@ class ToggleTwoFactorService
         $isValidToken = $this->google2FA->verifyKey($secret, $token, config()->get('pterodactyl.auth.2fa.window'));
 
         if (!$isValidToken) {
-            throw new TwoFactorAuthenticationTokenInvalid();
+            throw new TwoFactorAuthenticationTokenInvalid('The token provided is not valid.');
         }
 
         return $this->connection->transaction(function () use ($user, $toggleState) {
@@ -94,9 +94,6 @@ class ToggleTwoFactorService
                     $inserts[] = [
                         'user_id' => $user->id,
                         'token' => password_hash($token, PASSWORD_DEFAULT),
-                        // insert() won't actually set the time on the models, so make sure we do this
-                        // manually here.
-                        'created_at' => Carbon::now(),
                     ];
 
                     $tokens[] = $token;

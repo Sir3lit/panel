@@ -74,7 +74,7 @@ class EggController extends Controller
     public function store(EggFormRequest $request): RedirectResponse
     {
         $data = $request->normalize();
-        if (! empty($data['docker_images']) && ! is_array($data['docker_images'])) {
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
             $data['docker_images'] = array_map(function ($value) {
                 return trim($value);
             }, explode("\n", $data['docker_images']));
@@ -104,7 +104,7 @@ class EggController extends Controller
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
     {
         $data = $request->normalize();
-        if (! empty($data['docker_images']) && ! is_array($data['docker_images'])) {
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
             $data['docker_images'] = array_map(function ($value) {
                 return trim($value);
             }, explode("\n", $data['docker_images']));

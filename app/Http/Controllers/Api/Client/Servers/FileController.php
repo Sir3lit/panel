@@ -75,13 +75,18 @@ class FileController extends ClientApiController
     /**
      * Return the contents of a specified file for the user.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function contents(GetFileContentsRequest $request, Server $server): Response
     {
-        $response = $this->fileRepository->setServer($server)->getContent(
-            $request->get('file'),
-            config('pterodactyl.files.max_edit_size')
+        return new Response(
+            $this->fileRepository->setServer($server)->getContent(
+                $request->get('file'),
+                config('pterodactyl.files.max_edit_size')
+            ),
+            Response::HTTP_OK,
+            ['Content-Type' => 'text/plain']
         );
 
         return new Response($response, Response::HTTP_OK, ['Content-Type' => 'text/plain']);
@@ -143,7 +148,7 @@ class FileController extends ClientApiController
     /**
      * Creates a new folder on the server.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function create(CreateFolderRequest $request, Server $server): JsonResponse
     {
@@ -162,7 +167,7 @@ class FileController extends ClientApiController
     /**
      * Renames a file on the remote machine.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rename(RenameFileRequest $request, Server $server): JsonResponse
     {
@@ -205,14 +210,11 @@ class FileController extends ClientApiController
             // Allow up to five minutes for this request to process before timing out.
             set_time_limit(300);
 
-            $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
-
-            return $this->fileRepository->setServer($server)
-                ->compressFiles(
-                    $request->input('root'),
-                    $request->input('files')
-                );
-        });
+        $file = $this->fileRepository->setServer($server)
+            ->compressFiles(
+                $request->input('root'),
+                $request->input('files')
+            );
 
         return $this->fractal->item($file)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -244,15 +246,11 @@ class FileController extends ClientApiController
      */
     public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::SERVER__FILESYSTEM_DELETE, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
-
-            $this->fileRepository->setServer($server)
-                ->deleteFiles(
-                    $request->input('root'),
-                    $request->input('files')
-                );
-        });
+        $this->fileRepository->setServer($server)
+            ->deleteFiles(
+                $request->input('root'),
+                $request->input('files')
+            );
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
