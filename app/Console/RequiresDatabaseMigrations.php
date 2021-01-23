@@ -9,6 +9,8 @@ trait RequiresDatabaseMigrations
 {
     /**
      * Checks if the migrations have finished running by comparing the last migration file.
+     *
+     * @return bool
      */
     protected function hasCompletedMigrations(): bool
     {
@@ -17,7 +19,7 @@ trait RequiresDatabaseMigrations
 
         $files = $migrator->getMigrationFiles(database_path('migrations'));
 
-        if (!$migrator->repositoryExists()) {
+        if (! $migrator->repositoryExists()) {
             return false;
         }
 
@@ -32,8 +34,10 @@ trait RequiresDatabaseMigrations
      * Throw a massive error into the console to hopefully catch the users attention and get
      * them to properly run the migrations rather than ignoring all of the other previous
      * errors...
+     *
+     * @return int
      */
-    protected function showMigrationWarning()
+    protected function showMigrationWarning(): int
     {
         $this->getOutput()->writeln('<options=bold>
 | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
@@ -51,5 +55,7 @@ database state by running the command above.
 ');
 
         $this->getOutput()->error('You must correct the error above before continuing.');
+
+        return 1;
     }
 }

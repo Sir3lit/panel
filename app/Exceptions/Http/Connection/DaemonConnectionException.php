@@ -29,6 +29,9 @@ class DaemonConnectionException extends DisplayException
 
     /**
      * Throw a displayable exception caused by a daemon connection error.
+     *
+     * @param \GuzzleHttp\Exception\GuzzleException $previous
+     * @param bool $useStatusCode
      */
     public function __construct(GuzzleException $previous, bool $useStatusCode = true)
     {
@@ -38,15 +41,6 @@ class DaemonConnectionException extends DisplayException
 
         if ($useStatusCode) {
             $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();
-            // There are rare conditions where wings encounters a panic condition and crashes the
-            // request being made after content has already been sent over the wire. In these cases
-            // you can end up with a "successful" response code that is actual an error.
-            //
-            // Handle those better here since we shouldn't ever end up in this exception state and
-            // be returning a 2XX level response.
-            if ($this->statusCode < 400) {
-                $this->statusCode = Response::HTTP_BAD_GATEWAY;
-            }
         }
 
         if (is_null($response)) {
@@ -57,9 +51,12 @@ class DaemonConnectionException extends DisplayException
 
         // Attempt to pull the actual error message off the response and return that if it is not
         // a 500 level error.
-        if ($this->statusCode < 500 && !is_null($response)) {
-            $body = json_decode($response->getBody()->__toString(), true);
-            $message = sprintf('An error occurred on the remote host: %s. (request id: %s)', $body['error'] ?? $message, $this->requestId ?? '<nil>');
+        if ($this->statusCode < 500 && ! is_null($response)) {
+            $body = $response->getBody();
+            if (is_string($body) || (is_object($body) && method_exists($body, '__toString'))) {
+                $body = json_decode(is_string($body) ? $body : $body->__toString(), true);
+                $message = '[Wings Error]: ' . Arr::get($body, 'error', $message);
+            }
         }
 
         $level = $this->statusCode >= 500 && $this->statusCode !== 504

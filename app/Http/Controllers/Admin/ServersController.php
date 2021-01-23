@@ -304,7 +304,7 @@ class ServersController extends Controller
     public function saveStartup(Request $request, Server $server)
     {
         $data = $request->except('_token');
-        if (!empty($data['custom_docker_image'])) {
+        if (! empty($data['custom_docker_image'])) {
             $data['docker_image'] = $data['custom_docker_image'];
             unset($data['custom_docker_image']);
         }

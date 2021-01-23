@@ -28,6 +28,11 @@ class DatabaseHost extends Model
     protected $immutableDates = true;
 
     /**
+     * @var bool
+     */
+    protected $immutableDates = true;
+
+    /**
      * The table associated with the model.
      *
      * @var string

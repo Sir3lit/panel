@@ -10,17 +10,14 @@ class UpCommand extends BaseUpCommand
     use RequiresDatabaseMigrations;
 
     /**
-     * Block someone from running this up command if they have not completed
-     * the migration process.
+     * @return bool|int
      */
     public function handle()
     {
-        if (!$this->hasCompletedMigrations()) {
-            $this->showMigrationWarning();
-
-            return;
+        if (! $this->hasCompletedMigrations()) {
+            return $this->showMigrationWarning();
         }
 
-        parent::handle();
+        return parent::handle();
     }
 }

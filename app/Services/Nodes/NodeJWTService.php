@@ -31,6 +31,7 @@ class NodeJWTService
     /**
      * Set the claims to include in this JWT.
      *
+     * @param array $claims
      * @return $this
      */
     public function setClaims(array $claims)
@@ -41,6 +42,7 @@ class NodeJWTService
     }
 
     /**
+     * @param \DateTimeImmutable $date
      * @return $this
      */
     public function setExpiresAt(DateTimeImmutable $date)
@@ -51,6 +53,7 @@ class NodeJWTService
     }
 
     /**
+     * @param string $subject
      * @return $this
      */
     public function setSubject(string $subject)
@@ -63,16 +66,17 @@ class NodeJWTService
     /**
      * Generate a new JWT for a given node.
      *
+     * @param \Pterodactyl\Models\Node $node
      * @param string|null $identifiedBy
-     *
+     * @param string $algo
      * @return \Lcobucci\JWT\Token\Plain
      */
     public function handle(Node $node, string $identifiedBy, string $algo = 'md5')
     {
         $identifier = hash($algo, $identifiedBy);
-        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($node->getDecryptedKey()));
+        $config = Configuration::forSymmetricSigner(new Sha256, InMemory::plainText($node->getDecryptedKey()));
 
-        $builder = $config->builder(new TimestampDates())
+        $builder = $config->builder(new TimestampDates)
             ->issuedBy(config('app.url'))
             ->permittedFor($node->getConnectionAddress())
             ->identifiedBy($identifier)
@@ -84,7 +88,7 @@ class NodeJWTService
             $builder = $builder->expiresAt($this->expiresAt);
         }
 
-        if (!empty($this->subject)) {
+        if (! empty($this->subject)) {
             $builder = $builder->relatedTo($this->subject)->withHeader('sub', $this->subject);
         }
 
