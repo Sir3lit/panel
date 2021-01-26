@@ -15,8 +15,8 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int                                                                        $node_id
  * @property string                                                                     $name
  * @property string                                                                     $description
+ * @property string|null                                                                $status
  * @property bool                                                                       $skip_scripts
- * @property bool                                                                       $suspended
  * @property int                                                                        $owner_id
  * @property int                                                                        $memory
  * @property int                                                                        $swap
@@ -30,7 +30,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int                                                                        $egg_id
  * @property string                                                                     $startup
  * @property string                                                                     $image
- * @property int                                                                        $installed
  * @property int                                                                        $allocation_limit
  * @property int                                                                        $database_limit
  * @property int                                                                        $backup_limit
@@ -50,6 +49,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\ServerTransfer                                         $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection      $backups
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection       $mounts
+ * @property \Pterodactyl\Models\AuditLog[]                                             $audits
  */
 class Server extends Model
 {
@@ -62,9 +62,10 @@ class Server extends Model
      */
     public const RESOURCE_NAME = 'server';
 
-    public const STATUS_INSTALLING = 0;
-    public const STATUS_INSTALLED = 1;
-    public const STATUS_INSTALL_FAILED = 2;
+    public const STATUS_INSTALLING = 'installing';
+    public const STATUS_INSTALL_FAILED = 'install_failed';
+    public const STATUS_SUSPENDED = 'suspended';
+    public const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
     /**
      * The table associated with the model.
@@ -330,8 +331,6 @@ class Server extends Model
      * Returns a fresh AuditLog model for the server. This model is not saved to the
      * database when created, so it is up to the caller to correctly store it as needed.
      *
-     * @param string $action
-     * @param array $metadata
      * @return \Pterodactyl\Models\AuditLog
      */
     public function newAuditEvent(string $action, array $metadata = []): AuditLog
@@ -350,9 +349,8 @@ class Server extends Model
      *
      * The response from the callback is returned to the caller.
      *
-     * @param string $action
-     * @param \Closure $callback
      * @return mixed
+     *
      * @throws \Throwable
      */
     public function audit(string $action, Closure $callback)
