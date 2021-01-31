@@ -81,12 +81,13 @@ export default () => {
                         description={'Enter your account email address to receive instructions on resetting your password.'}
                         name={'email'}
                         type={'email'}
+                        disabled
                     />
                     <div css={tw`mt-6`}>
                         <Button
                             type={'submit'}
                             size={'xlarge'}
-                            disabled={isSubmitting}
+                            disabled
                             isLoading={isSubmitting}
                         >
                             Send Email

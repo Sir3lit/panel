@@ -65,6 +65,7 @@ export default () => {
                                     type={'password'}
                                     name={'current'}
                                     label={'Current Password'}
+                                    disabled
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
@@ -73,6 +74,7 @@ export default () => {
                                         name={'password'}
                                         label={'New Password'}
                                         description={'Your new password should be at least 8 characters in length and unique to this website.'}
+                                        disabled
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
@@ -81,10 +83,11 @@ export default () => {
                                         type={'password'}
                                         name={'confirmPassword'}
                                         label={'Confirm New Password'}
+                                        disabled
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
-                                    <Button size={'small'} disabled={isSubmitting || !isValid}>
+                                    <Button size={'small'} disabled>
                                         Update Password
                                     </Button>
                                 </div>

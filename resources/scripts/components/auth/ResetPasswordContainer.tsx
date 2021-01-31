@@ -60,7 +60,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                     .oneOf([ ref('password'), null ], 'Your new password does not match.'),
             })}
         >
-            {({ isSubmitting }) => (
+            {() => (
                 <LoginFormContainer
                     title={'Reset Password'}
                     css={tw`w-full flex`}
@@ -76,6 +76,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             name={'password'}
                             type={'password'}
                             description={'Passwords must be at least 8 characters in length.'}
+                            disabled
                         />
                     </div>
                     <div css={tw`mt-6`}>
@@ -84,14 +85,14 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             label={'Confirm New Password'}
                             name={'passwordConfirmation'}
                             type={'password'}
+                            disabled
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button
                             size={'xlarge'}
                             type={'submit'}
-                            disabled={isSubmitting}
-                            isLoading={isSubmitting}
+                            disabled
                         >
                             Reset Password
                         </Button>

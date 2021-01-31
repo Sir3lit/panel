@@ -53,7 +53,7 @@ export default () => {
             initialValues={{ email: user!.email, password: '' }}
         >
             {
-                ({ isSubmitting, isValid }) => (
+                ({ isSubmitting }) => (
                     <React.Fragment>
                         <SpinnerOverlay size={'large'} visible={isSubmitting}/>
                         <Form css={tw`m-0`}>
@@ -62,6 +62,7 @@ export default () => {
                                 type={'email'}
                                 name={'email'}
                                 label={'Email'}
+                                disabled
                             />
                             <div css={tw`mt-6`}>
                                 <Field
@@ -69,10 +70,11 @@ export default () => {
                                     type={'password'}
                                     name={'password'}
                                     label={'Confirm Password'}
+                                    disabled
                                 />
                             </div>
                             <div css={tw`mt-6`}>
-                                <Button size={'small'} disabled={isSubmitting || !isValid}>
+                                <Button size={'small'} disabled>
                                     Update Email
                                 </Button>
                             </div>
