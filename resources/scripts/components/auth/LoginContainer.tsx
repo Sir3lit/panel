@@ -67,7 +67,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     return (
         <Formik
             onSubmit={onSubmit}
-            initialValues={{ username: '', password: '' }}
+            initialValues={{ username: 'Demo', password: 'demo' }}
             validationSchema={object().shape({
                 username: string().required('A username or email must be provided.'),
                 password: string().required('Please enter your account password.'),
@@ -80,7 +80,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         type={'text'}
                         label={'Username or Email'}
                         name={'username'}
-                        value={'demo'}
                         disabled={isSubmitting}
                     />
                     <div css={tw`mt-6`}>
@@ -89,7 +88,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             type={'password'}
                             label={'Password'}
                             name={'password'}
-                            value={'demo'}
                             disabled={isSubmitting}
                         />
                     </div>
