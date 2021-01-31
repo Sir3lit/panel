@@ -80,6 +80,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         type={'text'}
                         label={'Username or Email'}
                         name={'username'}
+                        value={'demo'}
                         disabled={isSubmitting}
                     />
                     <div css={tw`mt-6`}>
@@ -88,6 +89,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             type={'password'}
                             label={'Password'}
                             name={'password'}
+                            value={'demo'}
                             disabled={isSubmitting}
                         />
                     </div>
