@@ -12,6 +12,8 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerStartup from '@/api/swr/getServerStartup';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 interface Props {
     variable: ServerEggVariable;
@@ -69,7 +71,7 @@ const VariableBox = ({ variable }: Props) => {
                 />
             </InputSpinner>
             <p css={tw`mt-1 text-xs text-neutral-300`}>
-                {variable.description}
+                <ReactMarkdown remarkPlugins={[ gfm ]}>{variable.description}</ReactMarkdown>
             </p>
         </TitledGreyBox>
     );
